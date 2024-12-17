@@ -4,7 +4,7 @@ This is a context provider for [OpenCtx](https://openctx.org) that fetches sourc
 
 ## Usage
 
-Add the following to your settings in any OpenCtx client, e.g. Cody for VS Code.  Specify one or more URLs of TIBCO BE projects.
+Add the following to your settings in any OpenCtx client, e.g. [Cody for VS Code](https://sourcegraph.com/cody).  Specify one or more URLs of TIBCO BE projects.
 
 ```json
 "openctx.providers": {
@@ -28,7 +28,27 @@ If this provider is uploaded to public npm repository, you can use it like this:
 
 The specified TIBCO BE projects should each contain an `index.json` file, such as the sample [index.json](./__fixtures__/yxuco/Petstore/index.json) file, which specifies the artifacts to be fetched as context for AI code assistants.
 
-To add a context to Cody chat window, type '@', then select 'TibcoBE', then select a query from the displayed list.  To select multiple contexts, type queries separated by ':', e.g., '@rule:rdbms' would return 2 contexts, 'rule' and 'rdbms'.
+To add contexts to Cody's chat window, type '@', then select 'TibcoBE', then select a query from the displayed list.  To select multiple contexts, type queries separated by ':', e.g., '@rule:rdbms' would return 2 contexts, 'rule' and 'rdbms'.  Press the Enter key to select the context, and then write your request for Cody to generate code for TIBCO BE.
+
+## Cody for VS Code examples
+
+Install [Cody for VS Code](https://sourcegraph.com/cody), and configure the settings as described above.
+
+Open any TIBOE project in VS Code, and start Cody chat window.  Type a request:
+
+```
+@rule:rdbms write rule that queries database using the sql statement and result concept uri specified in an event.
+```
+
+It should return a TIBCO BE rule that queries a database, and returns an event containing the resulting concepts.
+
+Type another request:
+
+```
+concept create a Student concept that contains properties name, major, gpa, class, and department.
+```
+
+It should return the definition of a TIBCO BE concept.
 
 ## Development
 
