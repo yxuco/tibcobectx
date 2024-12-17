@@ -1,0 +1,32 @@
+/**
+ * @description 
+ * @author Pro-Branes.local
+ */
+rule Rules.AddItemToCart {
+	attribute {
+		priority = 5;
+		forwardChain = true;
+	}
+	declare {
+		Events.AddItemToCart evt;
+		Concepts.Product prod;
+		Concepts.ShoppingCart cart;
+	}
+	when {
+		prod.sku == evt.sku;
+		cart.userName == evt.user;
+	}
+	then {
+		Object logger = Log.getLogger("Rules.AddItemToCart");
+		double amount = evt.unit * prod.price;
+		cart.items[cart.items@length] = Concepts.ShoppingItem.ShoppingItem(
+			null /*extId String */,
+			evt.sku /*sku String */,
+			evt.unit /*unit long */,
+			amount /*amount double */);
+		cart.amount += amount;
+		Log.log(logger, "info", "Added %d units of SKU %s to shopping cart of %s", evt.unit, evt.sku, evt.user);
+		Event.replyEvent(evt, Events.HTTPStatus.HTTPStatus(null,RuleFunctions.cartToJSON(cart),"200"));
+		Event.consumeEvent(evt);
+	}
+}

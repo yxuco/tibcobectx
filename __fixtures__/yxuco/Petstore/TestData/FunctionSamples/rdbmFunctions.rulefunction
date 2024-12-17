@@ -1,0 +1,133 @@
+/**
+ * @description Code examples for RDBMS library functions.  It is provided as a context file for testing AI code assistant.
+ */
+void rulefunction TestData.FunctionSamples.rdbmFunctions {
+	attribute {
+		validity = ACTION;
+	}
+	scope {
+		
+	}
+	body {
+		// Get a logger for use inside a rule/rulefunction
+		Object logger = Log.getLogger("TestData.FunctionSamples.rdbmFunctions");
+		
+		String jdbcResourceUri = "/SharedResources/jdbc";
+		try {
+			// Use case 1: Simple DB query
+			
+			String sql = "select sysdate from dual";
+			// Log sql statement
+			Log.log(logger, "info", "SQL statement: %s", sql);
+		
+			// Sets the connection to use for database operations.
+			Database.setCurrentConnection(jdbcResourceUri);
+
+			String resultConceptUri = "/Concepts/Count";
+			boolean queryChildren = false;
+			// Queries underlying database using the supplied SQL.
+			Concept[] result = Database.queryUsingSQL(resultConceptUri, sql, queryChildren);
+			for (int i = 0; i < result@length; i++) {
+				String root = "Count";
+				boolean pretty = false;
+				// Serializes a Concept instance into an JSON string.
+				String json = Instance.serializeToJSON(result[i], pretty, root);
+				// Log the content of a concept
+				Log.log(logger, "info", "Query returned concept %d of type %s: %s", i, resultConceptUri, json);
+			}
+		} catch (Exception e) {
+			// Log DB exception
+			Log.logException(logger, "error", "Failed to execute DB query %s", e, "");
+		} finally {
+			// Releases the current connection back to the connection pool. 
+			Database.unsetConnection();
+		}
+		
+		try {
+			// Use case 2: Invoke DB stored procedure in a DB transaction
+		
+			// Sets the connection to use for database operations.
+			Database.setCurrentConnection(jdbcResourceUri);
+			
+			// Begins a transaction on the current connection
+			Database.beginTransaction();
+			try {
+				String storedProc = "ResetInventory";
+				Object[] args = Object[]{"5348529", 20};
+			
+				// Initializes the given stored procedure
+				Object sp = Database.sp.initStoredProc(storedProc);
+				for (int i = 0; i < args@length; i++) {
+					// Sets input parameter of the stored procedure at the given index. Indices are 1-based.
+					Database.sp.setInputParameter(sp, i+1, args[i]);
+				}
+				int outputType = 6;
+				// For stored procedure with out parameters, sets the sqltype of the return type at the given index.
+				// The return type options are STRING=0; INT=1; LONG=2; DOUBLE=3; BOOLEAN=4; DATETIME=5; CONCEPT=6; CLOB=7.
+				Database.sp.setOutputParameterType(sp, args@length+1, outputType);
+			
+				// Executes the given stored procedure.
+				Database.sp.executeStoredProc(sp);
+			
+				// Retrieve the output object returned by stored procedure at the given index. 
+				Object data = Database.sp.getObjectAtIndex(sp, args@length+1);
+				// Log the returned concept
+				Log.log(logger, "info", "Stored procedure returned concept: %s", Instance.serializeToJSON(data, true, ""));
+			
+				// Commits the current transaction.
+				Database.commit();
+			} catch (Exception ex) {
+				// Log database exception
+				Log.logException(logger, "error", "Failed to execute DB stored proc %s", ex, "");
+			} finally {
+				Log.log(logger, "info", "Rollback DB transaction");
+				// Rolls back current transaction.
+				Database.rollback();
+			}
+		} catch (Exception e) {
+			// Log DB exception
+			Log.logException(logger, "error", "Failed to execute DB stored procedure %s", e, "");
+		} finally {
+			// Releases the current connection back to the connection pool. 
+			Database.unsetConnection();
+		}
+		
+		try {
+			// Use case 3: Iterating over DB query cursor
+			
+			// Sets the connection to use for database operations.
+			Database.setCurrentConnection(jdbcResourceUri);
+			
+			String sql = "select * from inventory";
+			String cursor = "AllInventory";
+			String resultConceptUri = "/Concepts/Inventory";
+			int pageSize = 50;
+			
+			// Opens a database cursor for the given sql query. Once the cursor is open, a user can page on the resultset of the query
+			Database.createQuery(jdbcResourceUri, cursor, resultConceptUri, sql, pageSize, null);
+			
+			try {
+				while (true) {
+					// Gets the next page from the database cursor
+					Concept[] data = Database.getNextPage(cursor, pageSize);
+					if (data != null) {
+						Log.log(logger, "info", "DB cursor returned a page of %d concepts", data@length);
+					}
+					if (data == null || data@length < pageSize) {
+						Log.log(logger, "info", "Reached end of DB cursor %s", cursor);
+						break;
+					}
+				}
+			} finally {
+				// Closes the cursor for the query
+				Database.closeQuery(cursor);
+			}
+		} catch (Exception e) {
+			// Log DB exception
+			Log.logException(logger, "error", "Failed to process query cursor %s", e, "");
+		} finally {
+			// Releases the current connection back to the connection pool. 
+			Database.unsetConnection();
+		}
+	}
+}

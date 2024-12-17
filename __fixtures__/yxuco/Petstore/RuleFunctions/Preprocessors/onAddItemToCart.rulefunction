@@ -1,0 +1,47 @@
+/**
+ * @description 
+ */
+void rulefunction RuleFunctions.Preprocessors.onAddItemToCart {
+	attribute {
+		validity = ACTION;
+	}
+	scope {
+		Events.AddItemToCart evt;
+	}
+	body {
+		Object logger = Log.getLogger("RuleFunctions.Preprocessors.onAddItemToCart");
+		
+		Concepts.Product prod = Instance.getByExtIdByUri(RuleFunctions.extIdPrefix("Product")+evt.sku, "/Concepts/Product");
+		if (prod == null) {
+			Log.log(logger, "info", "Product SKU %s does not exist", evt.sku);
+			// reply 404 Product not found
+			Event.replyEvent(evt, Events.HTTPStatus.HTTPStatus(null, null, "404"));
+			Event.consumeEvent(evt);
+			return;
+		}
+		
+		Concepts.User user = Instance.getByExtIdByUri(RuleFunctions.extIdPrefix("User")+evt.user, "/Concepts/User");
+		if (user == null) {
+			// create new user
+			user = Concepts.User.User(
+				RuleFunctions.extIdPrefix("User")+evt.user /*extId String */,
+				evt.user /*name String */,
+				"basic" /*status String */,
+				Concepts.PurchaseOrder[]{} /*orders Concepts.PurchaseOrder[] */,
+				0 /*rewardPoints long */,
+				Concepts.Coupon[]{} /*coupons Concepts.Coupon[] */);
+		}
+		
+		Concepts.ShoppingCart cart = Instance.getByExtIdByUri(RuleFunctions.extIdPrefix("ShoppingCart")+evt.user, "/Concepts/ShoppingCart");
+		if (cart == null) {
+			// create new shopping cart
+			cart = Concepts.ShoppingCart.ShoppingCart(
+				RuleFunctions.extIdPrefix("ShoppingCart")+evt.user /*extId String */,
+				evt.user /*userName String */,
+				Concepts.ShoppingItem[]{} /*items Concepts.ShoppingItem[] */,
+				0.0 /*amount double */);
+		}
+		
+		Log.log(logger, "info", "Adding %d units of SKU %s to shopping cart of %s", evt.unit, evt.sku, evt.user);
+	}
+}
