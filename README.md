@@ -1,6 +1,6 @@
 # TIBCO BE context provider for OpenCtx
 
-This is a context provider for [OpenCtx](https://openctx.org) that fetches source code from one of more TIBCO BE projects to be used as context for AI models.
+This is a context provider for [OpenCtx](https://openctx.org) that fetches source code from one or more TIBCO BE projects to be used as context for AI models.
 
 ## Usage
 
@@ -34,10 +34,10 @@ To add contexts to Cody's chat window, type '@', then select 'TibcoBE', then sel
 
 Install [Cody for VS Code](https://sourcegraph.com/cody), and configure the settings as described above.
 
-Open any TIBOE project in VS Code, and start Cody chat window.  Type a request:
+Open any TIBCO project in VS Code, and start Cody's chat window.  Type a request:
 
 ```
-@rule:rdbms write rule that queries database using the sql statement and result concept uri specified in an event.
+@rule:rdbms write rule that queries database using the sql statement and result concept uri specified by an event.
 ```
 
 It should return a TIBCO BE rule that queries a database, and returns an event containing the resulting concepts.
@@ -45,10 +45,10 @@ It should return a TIBCO BE rule that queries a database, and returns an event c
 Type another request:
 
 ```
-concept create a Student concept that contains properties name, major, gpa, class, and department.
+@concept create a Student concept that contains properties of name, major, gpa, class, and department.
 ```
 
-It should return the definition of a TIBCO BE concept.
+It should return the definition of a TIBCO BE concept containing the specified properties.
 
 ## Development
 
