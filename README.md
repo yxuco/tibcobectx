@@ -50,6 +50,18 @@ Type another request:
 
 It should return the definition of a TIBCO BE concept containing the specified properties.
 
+The following request generates a TIBCO BE event definition containing a property of 'name'.
+
+```
+@event create event of type CreateEntity with property of name.
+```
+
+Assuming that the TIBCO BE project contains an event defintion for 'CreateEntity', you can use the following request to generate a function that logs the properties of the event and then consume it.
+
+```
+@function @CreateEntity.event write a function that logs the received CreateEntity event, and then consume the event.
+```
+
 ## Development
 
 * `pnpm install`: Install dependencies
