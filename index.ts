@@ -81,7 +81,13 @@ const tibcobe: Provider<Settings> = {
             }
         }).slice(0, 20)
 
-        if (params.query?.includes(':')) {
+        if (params.query === undefined || params.query.length === 0) {
+            return [{
+                title: 'all',
+                uri: results.map(r => r.uri).join(', '),
+            }]
+        }
+        else if (params.query?.includes(':')) {
             // Cody takes only one item per query, so join them together.
             return [{
                 title: params.query,
