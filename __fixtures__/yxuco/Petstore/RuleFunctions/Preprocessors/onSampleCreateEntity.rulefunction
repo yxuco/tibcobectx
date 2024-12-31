@@ -1,0 +1,63 @@
+/**
+ * @description Sample preprocessor function for a request event. 
+ *              It loads a specified concept from cache, or creates a new concept.
+ *              In case of error, it cleans up the request and sends a reply event with error code 500.
+ */
+void rulefunction RuleFunctions.Preprocessors.onSampleCreateEntity {
+	attribute {
+		validity = ACTION;
+	}
+	scope {
+		Events.SampleCreateEntity evt;
+	}
+	body {
+		Object logger = Log.getLogger("RuleFunctions.Preprocessors.onSampleCreateEntity");
+		Log.log(logger, "info", "Received event SampleCreateEntity for keys (%s, %s) with quantity %d", evt.key1, evt.key2, evt.quantity);
+		
+		// acquire a cluster-wide lock on the keys of the requested concept
+		boolean locked = Cluster.DataGrid.Lock(
+			String.format("%s-%s", evt.key1, evt.key2) /* key for acquired lock */,
+			1000  /* lock timeout in ms */,
+			false /* lock is not local only */);
+		
+		if (!locked) {
+			// send reply and quit if failed to acquire lock
+			Log.log(logger, "info", "Failed to acquire lock on key: %s-%s", evt.key1, evt.key2);
+			// reply 404 Product not found
+			Event.replyEvent(evt, Events.HTTPStatus.HTTPStatus(null, null, "500"));
+			Event.consumeEvent(evt);
+			return;
+		}
+		
+		// composite key of the concept specified by input event
+		Object keys = Collections.Map.createLinkedHashMap();
+		Collections.Map.put(keys, "key1", evt.key1);
+		Collections.Map.put(keys, "key2", evt.key2);
+		
+		// URI of the requested concept
+		String entityUri = Concepts.SampleEntity.uri();
+		
+		// load the concept from cache using the specified composite key
+		Concepts.SampleEntity entity = Cluster.DataGrid.CacheLoadConceptByKeysByUri(
+			keys /* key map */,
+			true /* include contained concepts */,
+			entityUri /* concept URI */);
+		
+		if (entity == null) {
+			// create new concept if it does not already exist in cache
+			entity = Concepts.SampleEntity.SampleEntity(
+				null /*extId String */,
+				evt.key1 /*key1 String */,
+				evt.key2 /*key2 String */,
+				evt.quantity /*quantity long */,
+				0 /*price double */,
+				false /*inStock boolean */,
+				Date.today() /*restockDate DateTime */,
+				String[]{} /*tags String[] */,
+				Concepts.SampleChild[]{} /*children Concepts.SampleChild[] */);
+			Log.log(logger, "info", "Created SampleEntity of keys (%s, %s) and quantity %d", entity.key1, entity.key2, entity.quantity);
+		}
+		
+		Log.log(logger, "info", "Preprocess completed for event SampleCreateEntity of keys (%s, %s) and quantity %d", evt.key1, evt.key2, evt.quantity);
+	}
+}

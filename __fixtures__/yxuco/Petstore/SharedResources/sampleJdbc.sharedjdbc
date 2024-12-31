@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<BWSharedResource>
+    <name>sampleJdbc</name>
+    <resourceType>ae.shared.JDBCSharedResource</resourceType>
+    <description/>
+    <config>
+        <description/>
+        <resourceType>ae.shared.JDBCSharedResource</resourceType>
+        <driver>org.postgresql.Driver</driver>
+        <maxConnections>5</maxConnections>
+        <loginTimeout>0</loginTimeout>
+        <connectionType>JDBC</connectionType>
+        <UseSharedJndiConfig>false</UseSharedJndiConfig>
+        <location>jdbc:postgresql://localhost:5432/demo?currentSchema=beuser</location>
+        <user/>
+        <password>#!r6m/qQ2DufCNJuH3D9wX2A==</password>
+        <ContextFactory>com.tibco.tibjms.naming.TibjmsInitialContextFactory</ContextFactory>
+        <ProviderUrl>tibjmsnaming://localhost:7222</ProviderUrl>
+        <UserName/>
+        <UserPassword>#!kHbZ1oaqxMDiDfiOZ2hUCg==</UserPassword>
+        <jndiDataSourceName/>
+        <JndiSharedConfiguration/>
+        <useSsl>false</useSsl>
+        <ssl xmlns="http://www.tibco.com/xmlns/aemeta/services/2002">
+            <cert isRef="true"/>
+            <identity isRef="true"/>
+            <trustStorePassword>#!n5sfHaYSBQ1j8LL1A9tT5A==</trustStorePassword>
+            <requiresClientAuthentication>false</requiresClientAuthentication>
+            <verifyHostName>true</verifyHostName>
+            <expectedHostName/>
+        </ssl>
+    </config>
+</BWSharedResource>

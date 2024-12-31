@@ -31,8 +31,14 @@ export async function fetchIndex(tibURL: string): Promise<Index> {
 
     const response = await fetch(indexURL.toString())
     const index = JSON.parse(await response.text())
-
-    return index
+    const entries = index.entries.flatMap((entry: { name: string; path: string[]; type: string }) => {
+        return entry.path.map((path: string) => ({
+            name: entry.name,
+            path: path,
+            type: entry.type,
+        }))
+    })
+    return { entries: entries, types: index.types }
 }
 
 export async function fetchDoc(docURL: string): Promise<{ content: string, hash: string }> {

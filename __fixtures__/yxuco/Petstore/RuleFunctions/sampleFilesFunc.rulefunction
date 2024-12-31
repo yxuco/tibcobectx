@@ -1,0 +1,95 @@
+/**
+ * @description Code sample for file i/o library functions.  It is provided as a context file for testing AI code assistant.
+ */
+void rulefunction RuleFunctions.sampleFilesFunc {
+	attribute {
+		validity = ACTION;
+	}
+	scope {
+		
+	}
+	body {
+		// Get a logger for use inside a rule/rulefunction
+		Object logger = Log.getLogger("RuleFunctions.sampleFilesFunc");
+		
+		String path = "/tmp/demo/sample.txt";
+		Object file = null;
+		
+		try {
+			// Use case 1: Read text file line-by-line
+			
+			if (!File.fileExists(path)) {
+				Log.log(logger, "info", "File %s does not exist.", path);
+			}
+			else {
+				// open file for reading
+				file = File.openFile(path, "r");
+				Log.log(logger, "info", "Read file %s line-by-line.", path);
+				while (true) {
+					// read the next line of file
+					String line = File.fileReadLine(file);
+					if (line == null) break;
+					Log.log(logger, "info", "Read a line: %s", line);
+				}
+				Log.log(logger, "info", "Reading file %s reached EOF", path);
+			}
+		} catch (Exception e) {
+			// Log file exception
+			Log.logException(logger, "error", "Failed to read file %s", e, path);
+		} finally {
+			// close file if it is open. 
+			if (file != null) {
+				File.fileClose(file);
+			}
+		}
+		
+		try {
+			// Use case 2: Write text file line-by-line, create file if necessary
+			
+			if (!File.fileExists(path)) {
+				// create file folders if the file does not exist
+				Log.log(logger, "info", "Create folders for file path %s", path);
+				boolean ok = File.createFolders("/", path);
+				if (!ok) {
+					Log.log(logger, "info", "Failed to create folders for file path %s", path);
+					return;
+				}
+			}
+			
+			// open file for read and write
+			file = File.openFile(path, "rw");
+			Log.log(logger, "info", "Read file %s line-by-line.", path);
+			for (int i = 0; i < 100; i++) {
+				// write a line of text to file
+				String text = String.format("new text line %d", i);
+				File.fileWriteLine(file, text);
+				Log.log(logger, "info", "Wrote a line: %s", text);
+			}
+			Log.log(logger, "info", "Wrote 100 lines to file %s", path);
+		} catch (Exception e) {
+			// Log file exception
+			Log.logException(logger, "error", "Failed to write line to file %s", e, path);
+		} finally {
+			// close file if it is open. 
+			if (file != null) {
+				File.fileClose(file);
+			}
+		}
+		
+		String folder = "/tmp/demo";
+		try {
+			// Use case 3: Read content of all files in a specified directory
+
+			String[] files = File.listFiles(folder, "*");
+			
+			for (int i = 0; i < files@length; i++) {
+				String fp = String.format("%s/%s", folder, files[i]);
+				String content = File.readFileAsString(fp, "UTF-8");
+				Log.log(logger, "info", "Read from file %s:\n %s\n\n", fp, content);
+			}
+		} catch (Exception e) {
+			// Log file exception
+			Log.logException(logger, "error", "Failed to read folder %s", e, folder);
+		}
+	}
+}

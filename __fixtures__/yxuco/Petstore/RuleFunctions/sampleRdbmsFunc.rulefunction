@@ -1,7 +1,7 @@
 /**
- * @description Code examples for RDBMS library functions.  It is provided as a context file for testing AI code assistant.
+ * @description Code sample for RDBMS library functions.  It is provided as a context file for testing AI code assistant.
  */
-void rulefunction TestData.FunctionSamples.rdbmFunctions {
+void rulefunction RuleFunctions.sampleRdbmsFunc {
 	attribute {
 		validity = ACTION;
 	}
@@ -10,25 +10,26 @@ void rulefunction TestData.FunctionSamples.rdbmFunctions {
 	}
 	body {
 		// Get a logger for use inside a rule/rulefunction
-		Object logger = Log.getLogger("TestData.FunctionSamples.rdbmFunctions");
+		Object logger = Log.getLogger("RuleFunctions.sampleRdbmsFunc");
 		
-		String jdbcResourceUri = "/SharedResources/jdbc";
+		String jdbcResourceUri = "/SharedResources/sampleJdbc";
 		try {
 			// Use case 1: Simple DB query
+
+			String sql = "select * from d_sampleEntity";
 			
-			String sql = "select sysdate from dual";
 			// Log sql statement
 			Log.log(logger, "info", "SQL statement: %s", sql);
 		
 			// Sets the connection to use for database operations.
 			Database.setCurrentConnection(jdbcResourceUri);
 
-			String resultConceptUri = "/Concepts/Count";
+			String resultConceptUri = Concepts.SampleEntity.uri();
 			boolean queryChildren = false;
 			// Queries underlying database using the supplied SQL.
 			Concept[] result = Database.queryUsingSQL(resultConceptUri, sql, queryChildren);
 			for (int i = 0; i < result@length; i++) {
-				String root = "Count";
+				String root = "SampleEntity";
 				boolean pretty = false;
 				// Serializes a Concept instance into an JSON string.
 				String json = Instance.serializeToJSON(result[i], pretty, root);
@@ -98,9 +99,9 @@ void rulefunction TestData.FunctionSamples.rdbmFunctions {
 			// Sets the connection to use for database operations.
 			Database.setCurrentConnection(jdbcResourceUri);
 			
-			String sql = "select * from inventory";
+			String sql = "select * from d_SampleEntity";
 			String cursor = "AllInventory";
-			String resultConceptUri = "/Concepts/Inventory";
+			String resultConceptUri = Concepts.SampleEntity.uri();
 			int pageSize = 50;
 			
 			// Opens a database cursor for the given sql query. Once the cursor is open, a user can page on the resultset of the query

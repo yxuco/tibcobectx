@@ -1,0 +1,43 @@
+/**
+ * @description Sample rule to update a concept that matches the keys specified by a request event. 
+ *              It updates properties of the concept, and creates more child concepts.
+ *              Upon completion, it sends a reply event with code 200  and cleans up the request event. 
+ * @author Pro-Branes.local
+ */
+rule Rules.SampleUpdateEntity {
+	attribute {
+		priority = 5;
+		forwardChain = true;
+	}
+	declare {
+		Concepts.SampleEntity entity;
+		Events.SampleCreateEntity evt;
+	}
+	when {
+		entity.key1 == evt.key1;
+		entity.key2 == evt.key2;
+	}
+	then {
+		Object logger = Log.getLogger("Rules.SampleUpdateEntity");
+		Log.log(logger, "info", "Rule to update entity of key (%s, %s)", entity.key1, entity.key2);
+		
+		// update properties of the requested concept
+		entity.inStock = true;
+		entity.quantity = evt.quantity;
+		
+		Log.log(logger, "info", "Create %d child concepts", entity.quantity);
+		for (int i = 0; i < entity.quantity; i++) {
+			entity.children[i] = Concepts.SampleChild.SampleChild(
+				null /*extId String */,
+				"" /*keyId String */,
+				"" /*description String */);
+		}
+		
+		// send reply event with content of updated concept
+		String json = Instance.serializeToJSON(entity, true, "SampleEntity");
+		Event.replyEvent(evt, Events.HTTPStatus.HTTPStatus(null, json, "200"));
+		
+		// cleanup input event
+		Event.consumeEvent(evt);
+	}
+}

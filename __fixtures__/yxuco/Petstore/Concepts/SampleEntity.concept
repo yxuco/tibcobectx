@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<element:Concept xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:element="http:///com/tibco/cep/designtime/core/model/element" folder="/Concepts/" name="SampleEntity" description="" GUID="2E4C3776-80C8-FBA2-7517-4CDC1BEC1423" ownerProjectName="Petstore" superConceptPath="" autoStartStateMachine="true">
+  <extendedProperties/>
+  <properties name="key1" ownerProjectName="Petstore"/>
+  <properties name="key2" ownerProjectName="Petstore"/>
+  <properties name="quantity" ownerProjectName="Petstore" type="long"/>
+  <properties name="price" ownerProjectName="Petstore" type="double"/>
+  <properties name="inStock" ownerProjectName="Petstore" type="boolean"/>
+  <properties name="restockDate" ownerProjectName="Petstore" type="DateTime"/>
+  <properties name="tags" ownerProjectName="Petstore" array="true"/>
+  <properties name="children" ownerProjectName="Petstore" type="ConceptReference" conceptTypePath="/Concepts/SampleChild" array="true"/>
+</element:Concept>

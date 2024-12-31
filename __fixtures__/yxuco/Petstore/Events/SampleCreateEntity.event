@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<event:SimpleEvent xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:event="http:///com/tibco/cep/designtime/core/model/event" folder="/Events/" name="SampleCreateEntity" description="" GUID="73C9AF0F-EABC-903B-CD25-C0B42BFC3BA8" ownerProjectName="Petstore" superEventPath="" ttlUnits="Seconds" channelURI="/Channels/sample" destinationName="sampleUpdate">
+  <properties name="key1" ownerProjectName="Petstore"/>
+  <properties name="key2" ownerProjectName="Petstore"/>
+  <properties name="quantity" ownerProjectName="Petstore" type="long"/>
+  <expiryAction name="SampleCreateEntity_expiryAction" ownerProjectName="Petstore" actionText="" conditionText="">
+    <symbols>
+      <symbolList idName="samplecreateentity" type="/Events/SampleCreateEntity"/>
+    </symbols>
+  </expiryAction>
+</event:SimpleEvent>

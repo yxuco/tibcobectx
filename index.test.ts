@@ -74,8 +74,8 @@ describe('tibcobe', () => {
         const mentions = await tibcobe.mentions!({ query: 'rule:rdbms' }, settings)
         expect(mentions).toHaveLength(1)
         expect(mentions[0].title).toEqual('rule:rdbms')
-        expect(mentions[0].uri).toContain(url.pathToFileURL(path.join(fixturesDir, 'Rules/AddItemToCart.rule')).toString())
-        expect(mentions[0].uri).toContain(url.pathToFileURL(path.join(fixturesDir, 'TestData/FunctionSamples/rdbmFunctions.rulefunction')).toString())
+        expect(mentions[0].uri).toContain(url.pathToFileURL(path.join(fixturesDir, 'Rules/SampleUpdateEntity.rule')).toString())
+        expect(mentions[0].uri).toContain(url.pathToFileURL(path.join(fixturesDir, 'RuleFunctions/sampleRdbmsFunc.rulefunction')).toString())
     })
 
     test.runIf(INTEGRATION)('integration test query returns multiple files', async () => {
@@ -84,19 +84,19 @@ describe('tibcobe', () => {
         const mentions = await tibcobe.mentions!({ query: 'rule:rdbms' }, {urls: [baseURL]} as Settings)
         expect(mentions).toHaveLength(1)
         expect(mentions[0].title).toEqual('rule:rdbms')
-        expect(mentions[0].uri).toContain(new URL('refs/heads/main/Rules/AddItemToCart.rule', baseURL).toString())
-        expect(mentions[0].uri).toContain(new URL('refs/heads/main/TestData/FunctionSamples/rdbmFunctions.rulefunction', baseURL).toString())
+        expect(mentions[0].uri).toContain(new URL('refs/heads/main/Rules/SampleUpdateEntity.rule', baseURL).toString())
+        expect(mentions[0].uri).toContain(new URL('refs/heads/main/RuleFunctions/sampleRdbmsFunc.rulefunction', baseURL).toString())
     })
 
     test('test rule content', async () => {
         const settings = fixturesSettings
-        const mentionPath = path.join(fixturesDir, 'Rules/AddItemToCart.rule')
+        const mentionPath = path.join(fixturesDir, 'Rules/SampleUpdateEntity.rule')
         const item = await expectMentionItem({ query: 'rule' }, settings, {
             title: 'rule',
             uri: url.pathToFileURL(mentionPath).toString(),
         })
         expect(item.ai?.content).toContain(
-            'rule Rules.AddItemToCart {',
+            'rule Rules.SampleUpdateEntity {',
         )
     })
 
@@ -107,10 +107,10 @@ describe('tibcobe', () => {
 
         const item = await expectMentionItem({ query: 'rule' }, settings, {
             title: 'rule',
-            uri: 'https://raw.githubusercontent.com/yxuco/Petstore/refs/heads/main/Rules/AddItemToCart.rule',
+            uri: 'https://raw.githubusercontent.com/yxuco/Petstore/refs/heads/main/Rules/SampleUpdateEntity.rule',
         })
         expect(item.ai?.content).toContain(
-            'rule Rules.AddItemToCart {',
+            'rule Rules.SampleUpdateEntity {',
         )
     })
 
