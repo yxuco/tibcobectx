@@ -32,7 +32,7 @@ To add contexts to Cody's chat window, type '@', then scroll down to highlight `
 
 To query a small set of artifacts, you can start typing a query key word, e.g., `@rule` or `@concept` after the `TibcoBE` provider is selected.  The query may include multiple key words separated by ':', e.g., `@rule:rdbms` would return artifacts for `rule` and `rdbms`.  Press the Enter key to add the selected artifacts, and then write your request for Cody to generate TIBCO BE code.
 
-The query key words are defined in the [index.json](./__fixtures__/yxuco/Petstore/index.json) file at the root of specified TIBCO BE projects.  The sample project [Petstore](https://github.com/yxuco/Petstore/blob/main/index.json) specifies the following key words: `concept`, `rule`, `event`, `function`, `rdbms`.
+The query key words are defined in the [index.json](https://github.com/yxuco/Petstore/blob/main/index.json) file at the root of specified TIBCO BE projects.  The sample project [Petstore](https://github.com/yxuco/Petstore/) specifies the following key words: `concept`, `event`, `rule`, `preprocessor`, `standard`, `rdbms`, `channel`, `cdd`, `resource`.
 
 ## Cody for VS Code examples
 
